@@ -1,6 +1,6 @@
 name: "Custom Fullscreen Kiosk"
 description: "A custom Kiosk browser built to bypass security and allow USB camera access."
-version: "2.0.0"
+version: "2.0.1"
 slug: "custom-kiosk"
 init: false
 arch:
@@ -12,9 +12,8 @@ arch:
 startup: application
 boot: auto
 host_network: true
-host_pid: true
-privileged: true
 video: true
+apparmor: false
 devices:
   - /dev/dri:/dev/dri:rwm
   - /dev/fb0:/dev/fb0:rwm
