@@ -1,0 +1,24 @@
+name: "Custom Fullscreen Kiosk (Unlock Camera)"
+description: "A custom Kiosk browser built specifically to bypass security and allow USB camera access for HTTP sites."
+version: "1.0.0"
+slug: "custom_kiosk"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armv7
+  - armhf
+  - i386
+startup: application
+boot: auto
+host_network: true
+video: true
+devices:
+  - /dev/input:/dev/input:rwm
+  - /dev/dri:/dev/dri:rwm
+  - /dev/fb0:/dev/fb0:rwm
+  - /dev/tty0:/dev/tty0:rwm
+options:
+  target_url: "http://localhost:8000"
+schema:
+  target_url: str
