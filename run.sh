@@ -1,6 +1,6 @@
 #!/usr/bin/env bashio
 
-TARGET_URL=$(bashio::config 'target_url')
+TARGET_URL="http://teehomeassistant.local:8000"
 
 bashio::log.info "Starting Custom Kiosk Add-on..."
 bashio::log.info "URL to display: $TARGET_URL"
