@@ -4,19 +4,27 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install X11, Openbox, and Chromium
+# Install Chromium and minimal dependencies only (no X11 needed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    xserver-xorg-core \
-    xserver-xorg-video-fbdev \
-    xserver-xorg-input-all \
-    xserver-xorg-legacy \
-    x11-xserver-utils \
-    openbox \
     chromium \
+    chromium-sandbox \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    fonts-liberation \
+    udev \
     && rm -rf /var/lib/apt/lists/*
-
-# Allow anyone to start X
-RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config || echo "allowed_users=anybody" > /etc/X11/Xwrapper.config
 
 COPY run.sh /
 RUN chmod a+x /run.sh

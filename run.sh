@@ -2,32 +2,38 @@
 
 TARGET_URL="http://teehomeassistant.local:8000"
 
-bashio::log.info "Starting Custom Kiosk Add-on..."
-bashio::log.info "URL to display: $TARGET_URL"
+bashio::log.info "Starting Custom Fullscreen Kiosk v2.0..."
+bashio::log.info "Target URL: $TARGET_URL"
 
-# Clear old X locks
-rm -f /tmp/.X0-lock
+# Give system time to initialize
+sleep 2
 
-# Start X server using framebuffer
-Xorg -nocursor -s 0 -dpms &
-export DISPLAY=:0
+# Set permissions for framebuffer and input devices
+chmod 666 /dev/fb0 2>/dev/null || true
+chmod 666 /dev/tty0 2>/dev/null || true
+chmod 666 /dev/tty1 2>/dev/null || true
 
-# Wait for X to load
-sleep 3
+# Switch to tty1 to claim the display
+chvt 1 2>/dev/null || true
 
-# Start Openbox Window Manager
-openbox-session &
-sleep 1
+bashio::log.info "Launching Chromium in Ozone/KMS mode (no X11 needed)..."
 
-bashio::log.info "Launching Chromium with camera unlock flags..."
+# Run Chromium directly on the framebuffer via Ozone DRM backend
 exec chromium \
+  --ozone-platform=drm \
   --kiosk \
   --no-sandbox \
   --disable-dev-shm-usage \
-  --disable-gpu \
-  --disable-software-rasterizer \
+  --disable-gpu-sandbox \
+  --use-gl=egl \
+  --enable-gpu-rasterization \
   --use-fake-ui-for-media-stream \
   --allow-insecure-localhost \
   --unsafely-treat-insecure-origin-as-secure="${TARGET_URL}" \
+  --disable-infobars \
+  --noerrdialogs \
+  --disable-session-crashed-bubble \
+  --disable-translate \
   --autoplay-policy=no-user-gesture-required \
+  --start-fullscreen \
   "${TARGET_URL}"
